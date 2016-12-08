@@ -1,3 +1,5 @@
+import parseValidation from '../../helpers/parse-validation';
+
 const LOAD = 'awesome-project/auth/LOAD';
 const LOAD_SUCCESS = 'awesome-project/auth/LOAD_SUCCESS';
 const LOAD_FAIL = 'awesome-project/auth/LOAD_FAIL';
@@ -14,12 +16,14 @@ const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
 	console.log(action)
-
 	switch (action.type) {
-		case 'LOGIN':
-			break
-		case 'LOGIN_FAIL':
-			break
+		case LOGIN_SUCCESS:
+			console.log(parseValidation(action.result.data))
+			break;
+		case LOGIN_FAIL:
+			console.log(parseValidation(action.error.response.data))
+			break;
+		default:
 	}
 	
 	return state;
@@ -36,14 +40,12 @@ export function load() {
   };
 }
 
-export function login({ username, password }) {
+export function login(username, password) {
   return {
     types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
     promise: (client) => client.post('/login', {
-      data: {
-        username,
-        password
-      }
+    	username,
+    	password
     })
   };
 }

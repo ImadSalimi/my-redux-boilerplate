@@ -1,16 +1,15 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Button, Grid, Col, FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import * as authActions from '../../redux/modules/auth';
 
-export default class LoginPage extends Component {
-	static propTypes = {
-		onFormSubmit: PropTypes.func
-	}
+class Login extends Component {
 
 	constructor(props) {
 		super(props);
 
 		this.input = {};
-		// this.onSubmit = this.onSubmit.bind(this);
 	}
 
 	componentDidMount() {
@@ -19,19 +18,17 @@ export default class LoginPage extends Component {
 		}
 	}
 
-	onSubmit(e) {
-		e.preventDefault();
-		this.props.onFormSubmit({
-			username: this.input.username.value(),
-			passowrd: this.input.passowrd.value()
-		});
+	onFormSubmit(e) {
+		e.preventDefault()
+		const { username: { value: username }, password: { value: password } } = this.input
+		this.props.login(username, password);
 	}
 
 	render() {
 		return (
 			<Grid>
 				<Col xs={4} xsOffset={4}>
-					<form onSubmit={this.onSubmit}>
+					<form onSubmit={(e) => {this.onFormSubmit(e)}}>
 						<FormGroup>
 							<ControlLabel>Username</ControlLabel>
 							<input
@@ -57,3 +54,8 @@ export default class LoginPage extends Component {
 		);
 	}
 }
+
+export default connect(
+	state => ({user: state.auth.user}),
+	dispatch => bindActionCreators(authActions, dispatch)
+)(Login);
